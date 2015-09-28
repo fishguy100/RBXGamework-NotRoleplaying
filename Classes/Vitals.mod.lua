@@ -9,10 +9,10 @@ local VitalsMt = {
     return string.format([[
       * Vitals (%s)
       | Health : %d/%d
-      | Mind   : %d/%d
+      | Mana   : %d/%d
       | Energy : %d/%d
       | Armour : %d
-    ]],tostring(l.Interface),l.Health,l.MaxHealth,l.Mind,l.MaxMind,l.Energy,l.MaxEnergy,l.Armour)
+    ]],tostring(l.Interface),l.Health,l.MaxHealth,l.Mana,l.MaxMana,l.Energy,l.MaxEnergy,l.Armour)
   end;
   __metatable = "Vitals Class";
 };
@@ -26,17 +26,17 @@ function VitalsClass:Recalculate()
   local Interface = this.Interface;
   -- Quickly calculate limits based on the Interface Level
   this.MaxHealth = 100 + Interface.Level^1.4*10;
-  this.MaxMind = 80 + (Interface.Level/2)^2*4;
+  this.MaxMana = 80 + (Interface.Level/2)^2*4;
   this.MaxEnergy = 100 + Interface.Level*8
   do if this.Interface.Stats then
     local stats = this.Interface.Stats; -- Let Stats mod
-    local h,m,e = this.MaxHealth, this.MaxMind, this.MaxEnergy;
+    local h,m,e = this.MaxHealth, this.MaxMana, this.MaxEnergy;
     -- Check the basic mods
     h = h*stats.Mods.HealthCap;
-    m = m*stats.Mods.MindCap;
+    m = m*stats.Mods.ManaCap;
     e = e*stats.Mods.EnergyCap;
     -- Check special mods and apply
-    this.MaxHealth,this.MaxMind,this.MaxEnergy = stats:SpecialModVitals(h, m, e)
+    this.MaxHealth,this.MaxMana,this.MaxEnergy = stats:SpecialModVitals(h, m, e)
   end end;
   do if this.Interface.Inventory then
     local equip = this.Interface.Inventory.Equip -- Quickly grab equip Armour rating
@@ -48,7 +48,7 @@ function VitalsClass:Recalculate()
   end end;
   -- Catch if the limits are passed
   this.Health = math.min(this.Health, this.MaxHealth);
-  this.Mind = math.min(this.Mind, this.MaxMind);
+  this.Mana = math.min(this.Mana, this.MaxMana);
   this.Energy = math.min(this.Energy, this.MaxEnergy);
 end;
 
@@ -106,22 +106,22 @@ function VitalsClass:Heal(amt)
   this.Health = hp;
 end;
 
-function VitalsClass:UseMind(amt)
+function VitalsClass:UseMana(amt)
   local this = VitalsLinks[self];
-  local mind = this.Mind - amt;
-  if mind < 0 then
-    mind = 0;
+  local mana = this.Mana - amt;
+  if mana < 0 then
+    mana = 0;
   end;
-  this.Mind = mind;
+  this.Mana = mana;
 end;
 
-function VitalsClass:RestoreMind(amt)
+function VitalsClass:RestoreMana(amt)
   local this = VitalsLinks[self];
-  local mind = this.Mind + amt;
-  if mind > this.MaxMind then
-    mind = this.MaxMind;
+  local mana = this.Mana + amt;
+  if mana > this.MaxMana then
+    mana = this.MaxMana;
   end;
-  this.Mind = mind;
+  this.Mana = mana;
 end;
 
 function VitalsClass:UseEnergy(amt)
@@ -165,15 +165,15 @@ return function(Interface)
     Interface = Interface;
     Health = 100;
     MaxHealth = 100;
-    Mind = 100;
-    MaxMind = 100;
+    Mana = 100;
+    MaxMana = 100;
     Energy = 100;
     MaxEnergy = 100;
     Armour = 1;
     Status = setmetatable({},{__mode = 'k'});
     Died = Instance.new("BindableEvent");
     HealthChanged = Instance.new("BindableEvent");
-    MindChanged = Instance.new("BindableEvent");
+    ManaChanged = Instance.new("BindableEvent");
     EnergyChanged = Instance.new("BindableEvent");
     StatusAdded = Instance.new("BindableEvent");
   };
