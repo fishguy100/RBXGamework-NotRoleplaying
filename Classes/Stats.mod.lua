@@ -208,7 +208,7 @@ return function(Interface)
       int = 0;
       cha = 0;
       dex = 0;
-    }
+    };
     Mods = {
       HealthCap = 1;
       ManaCap = 1;
@@ -256,5 +256,12 @@ return function(Interface)
       };
     };
     Interface = Interface;
-  }
+  };
+  local newStats = newproxy(true);
+  local mt = getmetatable(newStats);
+  for k,v in next, StatsMt do
+    mt[k] = v;
+  end;
+  StatsLinks[newStats] = container
+  return newStats;
 end;
