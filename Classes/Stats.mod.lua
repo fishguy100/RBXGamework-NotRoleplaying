@@ -1,4 +1,4 @@
-local StatsLinks = {};
+local StatsLinks = setmetatable({},{__mode = 'k'});
 local StatsClass = {};
 local StatsMt = {};
 
