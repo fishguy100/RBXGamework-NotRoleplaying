@@ -73,13 +73,24 @@ function StatsClass:Update()
   end;
   -- Get from external sources
   local Interface = this.Interface;
+  do local Skills = Interface.Skills;
+    if Skills then
+      local modd = Skills:GetSpecialMods();
+      for k,v in pairs(modd) do
+        mods[k] = mods[k] + v;
+      end;
+    end;
+  end;
   do local Inventory = Interface.Inventory;
     if Inventory then
       local attcapp = Inventory:GetAttributeMods();
       for k,v in pairs(attcapp) do
         att[k] = att[k] + v;
       end;
-
+      local modd = Inventory:GetSpecialMods();
+      for k,v in pairs(modd) do
+        mods[k] = mods[k] + v;
+      end;
     end
   end;
   -- Calculate new Mods
