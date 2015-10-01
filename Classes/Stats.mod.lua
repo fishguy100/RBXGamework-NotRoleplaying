@@ -65,7 +65,7 @@ end;
 function StatsClass:GiveAttribute(att,amt)
   -- X gon' give it to ya'
   -- X gon' deliv' it to ya'
-  
+
 end;
 
 function StatsClass:ModifyBase(base,set)
