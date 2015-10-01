@@ -54,18 +54,35 @@ function StatsClass:RegisterVitalsHook(f)
   return disconnectionHandle;
 end;
 
-function StatsClass:Recalculate()
-  -- Get from internal sources
-end;
-
 function StatsClass:Update()
+  local this = StatusLinks[self];
+  local att = this.Attributes;
+  do local _att = this.BaseAttributes;
+    -- Set the Attributes back to their 'base' values.
+    att.str = _att.str;
+    att.agi = _att.agi;
+    att.luk = _att.luk;
+    att.int = _att.int;
+    att.cha = _att.cha;
+    att.dex = _att.dex;
+  end;
   -- Get from external sources
+
+  -- Calculate new Mods
 end;
 
 function StatsClass:GiveAttribute(att,amt)
   -- X gon' give it to ya'
   -- X gon' deliv' it to ya'
+  local BaseAttributes = StatusLinks[self].BaseAttributes;
+  BaseAttributes[att] = BaseAttributes[att] + amt;
+  self:Update();
+end;
 
+function StatsClass:SetAttribute(att,set)
+  local BaseAttributes = StatusLinks[self].BaseAttributes;
+  BaseAttributes[att] = set;
+  self:Update();
 end;
 
 function StatsClass:ModifyBase(base,set)
@@ -91,6 +108,14 @@ return function(Interface)
       cha = 0;
       dex = 0;
     };
+    BaseAttributes = {
+      str = 0;
+      agi = 0;
+      luk = 0;
+      int = 0;
+      cha = 0;
+      dex = 0;
+    }
     Mods = {
       HealthCap = 1;
       ManaCap = 1;
