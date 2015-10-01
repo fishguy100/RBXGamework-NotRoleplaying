@@ -54,7 +54,7 @@ end;
 
 function VitalsClass:TakeDamage(source) --> Calculated Damage
   local this = VitalsLinks[self];
-  local dmg = source.BaseDamage;
+  local dmg = source.BaseDamage or 1;
   do -- Let stats nerf
     local stats = this.Interface.Stats;
     if stats then
@@ -87,9 +87,10 @@ function VitalsClass:TakeDamage(source) --> Calculated Damage
   elseif hp <= 0 then
     hp = 0;
     this.Health = hp;
-    this.Interface.Died:Fire();
+    this.Died:Fire();
   end;
   this.Health = hp;
+  this.HealthChanged:Fire(hp);
   return dmg;
 end;
 
@@ -101,9 +102,10 @@ function VitalsClass:Heal(amt)
   elseif hp <= 0 then
     hp = 0;
     this.Health = hp;
-    this.Events.Died:Fire();
+    this.Died:Fire();
   end;
   this.Health = hp;
+  this.HealthChanged:Fire(hp);
 end;
 
 function VitalsClass:UseMana(amt)
@@ -113,6 +115,7 @@ function VitalsClass:UseMana(amt)
     mana = 0;
   end;
   this.Mana = mana;
+  this.ManaChanged:Fire(mana);
 end;
 
 function VitalsClass:RestoreMana(amt)
@@ -122,6 +125,7 @@ function VitalsClass:RestoreMana(amt)
     mana = this.MaxMana;
   end;
   this.Mana = mana;
+  this.ManaChanged:Fire(mana);
 end;
 
 function VitalsClass:UseEnergy(amt)
@@ -131,6 +135,7 @@ function VitalsClass:UseEnergy(amt)
     energy = 0;
   end;
   this.Energy = energy;
+  this.EnergyChanged:Fire(energy);
 end;
 
 function VitalsClass:RestoreEnergy(amt)
@@ -140,6 +145,7 @@ function VitalsClass:RestoreEnergy(amt)
     energy = this.MaxEnergy;
   end;
   this.Energy = energy;
+  this.EnergyChanged:Fire(energy);
 end;
 
 do -- Needs to know where to get the Status constructor from
@@ -147,6 +153,8 @@ do -- Needs to know where to get the Status constructor from
   function VitalsClass:GiveStatus(type, duration, level)
     local Status = newStatus(self, type or "Fire", duration or 1, level or 1);
     VitalsLinks[self].Status[Status.Key] = Status;
+    self.StatusAdded:Fire(Status);
+    return Status;
   end;
 end
 
