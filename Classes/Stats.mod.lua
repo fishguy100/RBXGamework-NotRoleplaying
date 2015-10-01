@@ -66,9 +66,91 @@ function StatsClass:Update()
     att.cha = _att.cha;
     att.dex = _att.dex;
   end;
+  local mods = this.Mods;
+  local _mods = this.BaseMods;
+  for k,v in next, mods do
+    mods[k] = 1;
+  end;
   -- Get from external sources
+  local Interface = this.Interface;
+  do local Inventory = Interface.Inventory;
+    if Inventory then
+      local attcapp = Inventory:GetAttributeMods();
+      for k,v in pairs(attcapp) do
+        att[k] = att[k] + v;
+      end;
 
+    end
+  end;
   -- Calculate new Mods
+  local str, agi, luk, int, cha, dex = att.str, att.agi, att.luk, att.int, att.cha, att.dex
+  mods.HealthCap = mods.HealthCap
+  *(1+str*0.04+dex*0.03)
+  *_mods.HealthCap;
+
+  mods.ManaCap = mods.ManaCap
+  *(1+--[[Attributes]])
+  *_mods.ManaCap;
+
+  mods.EnergyCap = mods.EnergyCap
+  *(1+--[[Attributes]])
+  *_mods.EnergyCap;
+
+  mods.MeleeDefence = mods.MeleeDefence
+  *(1+--[[Attributes]])
+  *_mods.MeleeDefence;
+
+  mods.RangedDefence = mods.RangedDefence
+  *(1+--[[Attributes]])
+  *_mods.RangedDefence;
+
+  mods.PhysicalDefence = mods.PhysicalDefence
+  *(1+--[[Attributes]])
+  *_mods.PhysicalDefence;
+
+  mods.MagicalDefence = mods.MagicalDefence
+  *(1+--[[Attributes]])
+  *_mods.MagicalDefence;
+
+  mods.FireDefence = mods.FireDefence
+  *(1+--[[Attributes]])
+  *_mods.FireDefence;
+
+  mods.IceDefence = mods.IceDefence
+  *(1+--[[Attributes]])
+  *_mods.IceDefence;
+
+  mods.PoisonDefence = mods.PoisonDefence
+  *(1+--[[Attributes]])
+  *_mods.PoisonDefence;
+
+  mods.MeleeAttack = mods.MeleeAttack
+  *(1+--[[Attributes]])
+  *_mods.MeleeAttack;
+
+  mods.RangedAttack = mods.RangedAttack
+  *(1+--[[Attributes]])
+  *_mods.RangedAttack;
+
+  mods.PhysicalAttack = mods.PhysicalAttack
+  *(1+--[[Attributes]])
+  *_mods.PhysicalAttack;
+
+  mods.MagicalAttack = mods.MagicalAttack
+  *(1+--[[Attributes]])
+  *_mods.MagicalAttack;
+
+  mods.FireAttack = mods.FireAttack
+  *(1+--[[Attributes]])
+  *_mods.FireAttack;
+
+  mods.IceAttack = mods.IceAttack
+  *(1+--[[Attributes]])
+  *_mods.IceAttack;
+
+  mods.PoisonAttack = mods.PoisonAttack
+  *(1+--[[Attributes]])
+  *_mods.PoisonAttack;
 end;
 
 function StatsClass:GiveAttribute(att,amt)
