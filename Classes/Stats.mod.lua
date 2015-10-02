@@ -1,6 +1,8 @@
 local StatsLinks = setmetatable({},{__mode = 'k'});
 local StatsClass = {};
-local StatsMt = {};
+local StatsMt = {
+  
+  };
 
 function StatsClass:SpecialModVitals(h,m,e)
   local registeredVitalMods = StatsLinks[self].SpecialModRegisters.Vitals;
