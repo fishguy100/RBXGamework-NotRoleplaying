@@ -1,7 +1,29 @@
 local StatsLinks = setmetatable({},{__mode = 'k'});
 local StatsClass = {};
 local StatsMt = {
-  
+  __index = function(t,k)
+    return StatsClass[k] or StatsLinks[t][k];
+  end;
+  __metatable = "Locked Metatable: eRPG";
+  __tostring = function(t)
+    local this = StatsLinks[t];
+    local att = this.Attributes;
+    local s = string.format([[
+* Stats
+| * Attributes
+| | Strength = %d
+| | Agility = %d
+| | Luck = %d
+| | Intelligence = %d
+| | Charisma = %d
+| | Dexterity = %d
+| * Mods
+]], att.str, att.agi, att.luk, att.int, att.cha, att.dex);
+    for k,v in next, this.Mods do
+      s = s.."\n| | "..k.." = "..v;
+    end;
+    return s;
+  end;
   };
 
 function StatsClass:SpecialModVitals(h,m,e)
