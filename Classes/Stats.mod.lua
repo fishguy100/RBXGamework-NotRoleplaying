@@ -4,7 +4,7 @@ local StatsMt = {
   __index = function(t,k)
     return StatsClass[k] or StatsLinks[t][k];
   end;
-  __metatable = "Locked Metatable: eRPG";
+  __metatable = "Stats Class";
   __tostring = function(t)
     local this = StatsLinks[t];
     local att = this.Attributes;
