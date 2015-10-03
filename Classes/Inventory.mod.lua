@@ -10,9 +10,36 @@ local InventoryMt = {
     return string.format([[
     * Inventory
     | Weight = %.1f/%d
-    ]], this.Weight, this.MaxWeight);
+    | OverEncumbered = %s
+    ]], this.Weight, this.MaxWeight, tostring(this.Weight > this.MaxWeight));
   end;
 };
+
+local ValidEquipPoints = {
+  Weapon = true;
+  WeaponL = true;
+  WeaponR = true;
+  WeaponD = true;
+  Ring = true;
+  Ring1 = true;
+  Ring2 = true;
+  Ring3 = true;
+  Body = true;
+  Feet = true;
+  Legs = true;
+  Head = true;
+  Necklace = true;
+};
+
+local EquipAliasPoints = {
+  Helmet = "Head";
+  Greaves =  "Legs";
+  Trousers = "Legs";
+  Chestplate = "Body";
+  Shoes = "Feet";
+  Boots = "Feet";
+  Bracelet = "Ring";
+}
 
 function InventoryClass:Update()
   local this = InventoryLinks[self];
@@ -101,7 +128,28 @@ function InventoryClass:RemoveItem(item, amount)
     if not found then return 0;
   end;
   self.Weight = self.Weight - item.Weight*rem;
-  return rem;
+  return item, rem;
+end;
+
+function InventoryClass:Equip(item)
+  local this = InventoryLinks[self];
+  local success = false;
+  if type(item) == 'number' then
+    -- Fetch it from the Inventory
+  end;
+  -- It's okay we're fine guys.
+  return success;
+end;
+
+function InventoryClass:Dequip(slot)
+  assert(slot, "You need to supply a slot to dequip", 2);
+  local this = InventoryLinks[self];
+  if ValidEquipPoints[slot] then
+    -- We're actually given a slot oh isn't that so fun?
+    
+  else
+    return error(slot.." is not a valid equip point", 2);
+  end;
 end;
 
 return function(Interface)
