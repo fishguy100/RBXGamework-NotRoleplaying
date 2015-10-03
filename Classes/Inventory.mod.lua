@@ -127,15 +127,104 @@ function InventoryClass:RemoveItem(item, amount)
     end;
     if not found then return 0;
   end;
-  self.Weight = self.Weight - item.Weight*rem;
+  this.Weight = this.Weight - item.Weight*rem;
   return item, rem;
 end;
 
-function InventoryClass:Equip(item)
+function InventoryClass:Equip(item, special)
   local this = InventoryLinks[self];
   local success = false;
-  if type(item) == 'number' then
-    -- Fetch it from the Inventory
+  item = self:RemoveItem(item);
+  if not item then return error("Invalid item to equip!", 2) end;
+  if item.Equippable then
+    local eType = item.EquipClass;
+    local equipPoint = this.Equip;
+    eType = EquipAliasPoints[eType] or eType;
+    -- Check special equippable types
+    assert(ValidEquipPoints[eType], eType.." has no equip target!", 2);
+    if eType == 'Ring' then
+      -- Special case: Rings
+      -- Check if we can overflow to another Ring
+      local able;
+      if not special then
+        for i=1,3 do
+          if equipPoint["Ring"..i] then
+            able = i;
+            break;
+          end;
+        end;
+      end;
+      if able or special then
+        equipPoint["Ring"..(able or special)] = item;
+      else
+        -- Cycle the rings
+        local r1 = equipPoint.Ring1;
+        local r2 = equipPoint.Ring2;
+        local r3 = equipPoint.Ring3
+        equipPoint.Ring2 = r1;
+        equipPoint.Ring3 = r2;
+        equipPoint.Ring1 = item;
+        self:AddItem(r3);
+      end;
+    elseif eType == 'Weapon' then
+      -- Special case: Single-handed weapon
+      -- Check if there is a two-handed equipped
+      if equipPoint.WeaponD then
+        -- Dualies on.
+        self:AddItem(self:Dequip("WeaponD")); -- Dualies off.
+      end;
+      if special == "L" then
+        -- Manual equip to L
+        local i = equipPoint.WeaponL;
+        equipPoint.WeaponL = item;
+        if i then
+          self:AddItem(i);
+        end;
+      elseif special == "R" then
+        -- Manual equip to R
+        local i = equipPoint.WeaponR;
+        equipPoint.WeaponR = item;
+        if i then
+          self:AddItem(i);
+        end;
+      else
+        -- Check which hands are taken
+        if not equipPoint.WeaponL then
+          -- Left hand is clear
+          equipPoint.WeaponL = item;
+        elseif not equipPoint.WeaponR then
+          -- Right hand is clear
+          equipPoint.WeaponR = item;
+        else
+          -- Both hands are taken; cycle them.
+          local l,r = equipPoint.WeaponL, equipPoint.WeaponR;
+          equipPoint.WeaponL = item;
+          equipPoint.WeaponR = l;
+          self:AddItem(r);
+        end;
+      end;
+    elseif eType == 'WeaponD' then
+      -- Special case: Two-handed weapon
+      -- Quickly try and dequip L,R if applicable
+      local l,r = equipPoint.WeaponL, equipPoint.WeaponR;
+      equipPoint.WeaponL = nil;
+      equipPoint.WeaponR = nil;
+      if l then self:AddItem(l) end;
+      if r then self:AddItem(r) end;
+      -- Quickly try to dequip an active two-hand if applicable
+      local d = equipPoint.WeaponD;
+      equipPoint.WeaponD = item;
+      if d then self:AddItem(d) end;
+    else
+      -- Any other standard equip
+      local i = equipPoint[eType];
+      equipPoint[eType] = item;
+      if i then self:AddItem(i) end;
+    end;
+    self:Update();
+    success = true;
+  else
+    self:AddItem(item);
   end;
   -- It's okay we're fine guys.
   return success;
@@ -144,12 +233,16 @@ end;
 function InventoryClass:Dequip(slot)
   assert(slot, "You need to supply a slot to dequip", 2);
   local this = InventoryLinks[self];
+  local item;
   if ValidEquipPoints[slot] then
     -- We're actually given a slot oh isn't that so fun?
-    
+    item = Equip[slot];
+    Equip[slot] = nil;
   else
     return error(slot.." is not a valid equip point", 2);
   end;
+  self:Update();
+  return item;
 end;
 
 return function(Interface)
