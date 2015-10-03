@@ -24,7 +24,11 @@ local StatsMt = {
     end;
     return s;
   end;
-  };
+};
+
+function StatsClass:Dump()
+  return StatsLinks[self];
+end;
 
 function StatsClass:SpecialModVitals(h,m,e)
   local registeredVitalMods = StatsLinks[self].SpecialModRegisters.Vitals;
