@@ -48,6 +48,9 @@ function InventoryClass:GiveItem(item, amount)
     this.InventoryQuantity[n] = amount;
   end;
   this.Weight = this.Weight + item.Weight*amount;
+  if this.Weight > this.MaxWeight then
+    this.OverEncumbered:Fire(true);
+  end;
 end;
 
 function InventoryClass:RemoveItem(item, amount)
@@ -63,14 +66,17 @@ function InventoryClass:RemoveItem(item, amount)
     a = a - amount;
     if a =< 0 then
       rem = rem + a;
-      inv[item] = nil;
-      q[item] = nil;
+      local _i = item;
+      item = inv[_i];
+      inv[_i] = nil;
+      q[_i] = nil;
       for i=item,#inv do
         inv[i-1] = inv[i];
         q[i-1] = q[i];
       end;
     else
       q[item] = a;
+      item = inv[item];
     end;
   else
     -- Choosing an item
@@ -94,6 +100,7 @@ function InventoryClass:RemoveItem(item, amount)
     end;
     if not found then return 0;
   end;
+  self.Weight = self.Weight - item.Weight*rem;
   return rem;
 end;
 
@@ -109,6 +116,7 @@ return function(Interface)
     MaxWeight = 100;
     Interface = Interface
     Disconnections = {};
+    OverEncumbered = Instance.new "BindableEvent";
   };
   for k,v in next, InventoryMt do
     mt[k] = v;
