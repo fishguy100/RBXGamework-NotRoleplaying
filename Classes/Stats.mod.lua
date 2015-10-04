@@ -190,6 +190,10 @@ function StatsClass:Update()
   mods.PoisonAttack = mods.PoisonAttack
   *(1+--[[Attributes]])
   *_mods.PoisonAttack;
+
+  mods.MaxCarryWeight = mods.MaxCarryWeight
+  *(1+--[[Attributes]])
+  *_mods.MaxCarryWeight;
 end;
 
 function StatsClass:GiveAttribute(att,amt)
@@ -255,6 +259,7 @@ return function(Interface)
       FireAttack = 1;
       IceAttack = 1;
       PoisonAttack = 1;
+      MaxCarryWeight = 1;
     };
     BaseMods = {
       HealthCap = 1;
@@ -274,6 +279,7 @@ return function(Interface)
       FireAttack = 1;
       IceAttack = 1;
       PoisonAttack = 1;
+      MaxCarryWeight = 1;
     };
     SpecialModRegisters = {
       Vitals = {
