@@ -43,16 +43,51 @@ local EquipAliasPoints = {
 
 function InventoryClass:Update()
   local this = InventoryLinks[self];
+  local Interface = this.Interface;
+  local Stats = Interface.Stats;
   -- Disconnect all of the SpecialMods to start
   for k,v in next, this.Disconnections do
     v();
   end;
-  -- Recalculate the MaxWeight
 
   -- Recalculate all the weights
+  local inv,qty = this.Inventory, this.InventoryQuantity;
+  local w = 0;
+  for i=1,#inv do
+    w = w + inv[i].Weight*qty[i];
+  end;
+  this.Weight = w;
 
   -- Bind all the special mods
+  if Stats then
+    for k,v in pairs(this.Equip) do
+      local m = v.SpecialMods;
+      if m then
+        if m.Vitals then
+          Stats:RegisterVitalsHook(m.Vitals);
+        end;
+        if m.Carry then
+          Stats:RegisterCarryHook(m.Carry);
+        end;
+        if m.Damage then
+          Stats:RegisterDamageHook(m.Damage);
+        end;
+      end;
+    end;
+  end;
 
+  -- Recalculate the MaxWeight
+  local mw = 100 + 10 * Interface.Level;
+  if Stats then
+    mw = mw*Stats.Mods.MaxCarryWeight;
+    mw = Stats:SpecialModCarry(mw);
+  end;
+  if mw > this.Weight then
+    this.OverEncumbered:Fire(true);
+  else
+    this.OverEncumbered:Fire(false);
+  end;
+  this.MaxWeight = mw;
 end;
 
 function InventoryClass:GiveItem(item, amount)

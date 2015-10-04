@@ -46,6 +46,14 @@ function StatsClass:SpecialModDamage(dmg,source)
   return dmg
 end;
 
+function StatsClass:SpecialModCarry(mw)
+  local registeredCarryMods = StatsLinks[self].SpecialModRegisters.Carry;
+  for i=1,#registeredCarryMods do
+    mw = registeredCarryMods[i](mw);
+  end;
+  return mw;
+end;
+
 function StatsClass:RegisterDamageHook(f)
   local reg = StatsLinks[self].SpecialModRegisters.Damage;
   reg[#reg+1] = f;
@@ -66,6 +74,24 @@ end;
 
 function StatsClass:RegisterVitalsHook(f)
   local reg = StatsLinks[self].SpecialModRegisters.Vitals;
+  reg[#reg+1] = f;
+  local found;
+  local disconnectionHandle = function()
+    if found then return end;
+    for i=1,#reg do
+      if reg[i] == f then
+        reg[i] = nil;
+        found = true;
+      elseif found then
+        reg[i-1] = reg[i];
+      end;
+    end;
+  end;
+  return disconnectionHandle;
+end;
+
+function StatsClass:RegisterCarryHook(f)
+  local reg = StatsLinks[self].SpecialModRegisters.Carry;
   reg[#reg+1] = f;
   local found;
   local disconnectionHandle = function()
@@ -286,6 +312,9 @@ return function(Interface)
 
       };
       Damage = {
+
+      };
+      Carry = {
 
       };
     };
