@@ -154,71 +154,71 @@ function StatsClass:Update()
   *_mods.HealthCap;
 
   mods.ManaCap = mods.ManaCap
-  *(1+--[[Attributes]])
+  *(1+-.5 + (dex * (str/4)))
   *_mods.ManaCap;
 
   mods.EnergyCap = mods.EnergyCap
-  *(1+--[[Attributes]])
+  *(1+dex/5 * .05)
   *_mods.EnergyCap;
 
   mods.MeleeDefence = mods.MeleeDefence
-  *(1+--[[Attributes]])
+  *(1+(luk/agi)+.5)
   *_mods.MeleeDefence;
 
   mods.RangedDefence = mods.RangedDefence
-  *(1+--[[Attributes]])
+  *(1+(int * 2)/.5)
   *_mods.RangedDefence;
 
   mods.PhysicalDefence = mods.PhysicalDefence
-  *(1+--[[Attributes]])
+  *(1+str + dex * .02)
   *_mods.PhysicalDefence;
 
   mods.MagicalDefence = mods.MagicalDefence
-  *(1+--[[Attributes]])
+  *(1+(luk + agi)/2)
   *_mods.MagicalDefence;
 
   mods.FireDefence = mods.FireDefence
-  *(1+--[[Attributes]])
+  *(1+agi + cha)
   *_mods.FireDefence;
 
   mods.IceDefence = mods.IceDefence
-  *(1+--[[Attributes]])
+  *(1+agi + cha * 2)
   *_mods.IceDefence;
 
   mods.PoisonDefence = mods.PoisonDefence
-  *(1+--[[Attributes]])
+  *(1+agi  cha * 5)
   *_mods.PoisonDefence;
 
   mods.MeleeAttack = mods.MeleeAttack
-  *(1+--[[Attributes]])
+  *(1+(luk * agi)/2)
   *_mods.MeleeAttack;
 
   mods.RangedAttack = mods.RangedAttack
-  *(1+--[[Attributes]])
+  *(1+str * luk)
   *_mods.RangedAttack;
 
   mods.PhysicalAttack = mods.PhysicalAttack
-  *(1+--[[Attributes]])
+  *(1+str * .03 + agi * .03)
   *_mods.PhysicalAttack;
 
   mods.MagicalAttack = mods.MagicalAttack
-  *(1+--[[Attributes]])
+  *(1+(cha * .3)/.2)
   *_mods.MagicalAttack;
 
   mods.FireAttack = mods.FireAttack
-  *(1+--[[Attributes]])
+  *(1+agi + (str/2))
   *_mods.FireAttack;
 
   mods.IceAttack = mods.IceAttack
-  *(1+--[[Attributes]])
+  *(1+str * 2)
   *_mods.IceAttack;
 
   mods.PoisonAttack = mods.PoisonAttack
-  *(1+--[[Attributes]])
+  *(1+agi/str)
   *_mods.PoisonAttack;
 
   mods.MaxCarryWeight = mods.MaxCarryWeight
-  *(1+--[[Attributes]])
+  *(1+str * .5)
   *_mods.MaxCarryWeight;
 end;
 
