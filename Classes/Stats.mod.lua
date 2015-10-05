@@ -166,7 +166,7 @@ function StatsClass:Update()
   *_mods.MeleeDefence;
 
   mods.RangedDefence = mods.RangedDefence
-  *(1+--[[Attributes]])
+  *(1+(str < 100 and str or 100) * agi/2)
   *_mods.RangedDefence;
 
   mods.PhysicalDefence = mods.PhysicalDefence
@@ -198,11 +198,11 @@ function StatsClass:Update()
   *_mods.RangedAttack;
 
   mods.PhysicalAttack = mods.PhysicalAttack
-  *(1+--[[Attributes]])
+  *(1+str * 2)
   *_mods.PhysicalAttack;
 
   mods.MagicalAttack = mods.MagicalAttack
-  *(1+--[[Attributes]])
+  *(1+luk * (str < 100 and str or 100))
   *_mods.MagicalAttack;
 
   mods.FireAttack = mods.FireAttack
