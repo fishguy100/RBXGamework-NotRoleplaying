@@ -174,7 +174,7 @@ function StatsClass:Update()
   *_mods.PhysicalDefence;
 
   mods.MagicalDefence = mods.MagicalDefence
-  *(1+--[[Attributes]])
+  *(1+(luk < 100 and luk or 100) * agi)
   *_mods.MagicalDefence;
 
   mods.FireDefence = mods.FireDefence
@@ -182,7 +182,7 @@ function StatsClass:Update()
   *_mods.FireDefence;
 
   mods.IceDefence = mods.IceDefence
-  *(1+--[[Attributes]])
+  *(1+(str < 50 and str or 50) * 2)
   *_mods.IceDefence;
 
   mods.PoisonDefence = mods.PoisonDefence
